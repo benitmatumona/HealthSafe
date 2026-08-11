@@ -17,6 +17,13 @@ public class PatientService {
         return patients;
     }
 
+    public boolean existsById(Long id){
+
+    	return patients.stream()
+            .anyMatch(patient -> patient.getId().equals(id));
+
+    }
+
 
     public Patient addPatient(Patient patient) {
 
