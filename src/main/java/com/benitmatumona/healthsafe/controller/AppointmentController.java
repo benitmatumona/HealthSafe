@@ -2,8 +2,11 @@ package com.benitmatumona.healthsafe.controller;
 
 
 import com.benitmatumona.healthsafe.dto.AppointmentRequest;
+import com.benitmatumona.healthsafe.exception.ResourceNotFoundException;
 import com.benitmatumona.healthsafe.model.Appointment;
 import com.benitmatumona.healthsafe.service.AppointmentService;
+import com.benitmatumona.healthsafe.service.DoctorService;
+import com.benitmatumona.healthsafe.service.PatientService;
 
 import jakarta.validation.Valid;
 
@@ -19,12 +22,20 @@ public class AppointmentController {
 
 
     private final AppointmentService appointmentService;
+    private final PatientService patientService;
+    private final DoctorService doctorService;
 
 
 
-    public AppointmentController(AppointmentService appointmentService){
+    public AppointmentController(
+            AppointmentService appointmentService,
+            PatientService patientService,
+            DoctorService doctorService
+    ){
 
         this.appointmentService = appointmentService;
+        this.patientService = patientService;
+        this.doctorService = doctorService;
 
     }
 
@@ -44,6 +55,17 @@ public class AppointmentController {
             @Valid @RequestBody AppointmentRequest request
     ){
 
+        if (!patientService.existsById(request.getPatientId())) {
+            throw new ResourceNotFoundException(
+                    "Patient not found with id: " + request.getPatientId()
+            );
+        }
+
+        if (!doctorService.existsById(request.getDoctorId())) {
+            throw new ResourceNotFoundException(
+                    "Doctor not found with id: " + request.getDoctorId()
+            );
+        }
 
         Appointment appointment = new Appointment();
 
