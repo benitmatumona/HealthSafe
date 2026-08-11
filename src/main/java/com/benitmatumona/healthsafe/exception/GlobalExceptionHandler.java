@@ -35,4 +35,18 @@ public class GlobalExceptionHandler {
     }
 
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleResourceNotFound(
+        ResourceNotFoundException exception
+    ){
+
+    	return new ErrorResponse(
+            LocalDateTime.now(),
+            404,
+            exception.getMessage()
+    );
+
+}
+
 }
